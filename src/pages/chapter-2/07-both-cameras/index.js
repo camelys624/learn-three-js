@@ -52,7 +52,7 @@ class BothCamerasDemo {
 
         this.#scene.add(cube);
       }
-    };
+    }
 
     let directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
     directionalLight.position.set(-20, 40, 60);
@@ -86,7 +86,7 @@ class BothCamerasDemo {
       }
     };
 
-    let gui = new dat.GUI;
+    let gui = new dat.GUI();
     gui.add(controls, 'switchCamera');
     gui.add(controls, 'perspective').listen();
 

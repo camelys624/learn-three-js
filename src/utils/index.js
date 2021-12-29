@@ -1,5 +1,6 @@
 import Stats from "three/examples/jsm/libs/stats.module";
 import {TrackballControls} from "three/examples/jsm/controls/TrackballControls";
+import { OBJLoader2 } from "three/examples/jsm/loaders/OBJLoader2"
 import * as THREE from 'three';
 
 /**
@@ -452,4 +453,139 @@ export function addSpecificMaterialSetting(gui, controls, material, name) {
 
       return folder;
   }
+}
+
+/**
+ * Remove a folder from the dat.gui
+ *
+ * @param {*} gui
+ * @param {*} folder
+ */
+let guiRemoveFolder = function (gui, folder) {
+  if (folder && folder.name && gui.__folders[folder.name]) {
+    gui.__folders[folder.name].close();
+    gui.__folders[folder.name].domElement.parentNode.parentNode.removeChild(gui.__folders[folder.name].domElement.parentNode);
+    delete gui.__folders[folder.name];
+    gui.onResize();
+  }
+}
+
+export function redrawGeometryAndUpdateUI(gui, scene, controls, geomFunction) {
+  guiRemoveFolder(gui, controls.specificMaterialFolder);
+  guiRemoveFolder(gui, controls.currentMaterialFolder);
+
+  if (controls.mesh) scene.remove(controls.mesh);
+
+  let changeMat = eval('(' + controls.appliedMaterial + ')');
+  if (controls.mesh) {
+    controls.mesh = changeMat(geomFunction(), controls.mesh.material);
+  } else {
+    controls.mesh = changeMat(geomFunction());
+  }
+
+  controls.mesh.castShadow = controls.castShadow;
+  scene.add(controls.mesh);
+  controls.currentMaterialFolder = addBasicMaterialSetting(gui, controls, controls.mesh.material);
+  controls.specificMaterialFolder = addSpecificMaterialSetting(gui, controls, controls.mesh.material);
+}
+
+let setMaterialGroup = function (material, group) {
+  if (group instanceof  THREE.Mesh) {
+    group.material = material;
+  } else if (group instanceof THREE.Group) {
+    group.children.forEach(child => setMaterialGroup(material, child));
+  }
+}
+
+let computeNormalsGroup = function (group) {
+  if (group instanceof THREE.Mesh) {
+    let tempGeom = new THREE.Geometry();
+    tempGeom.fromBufferGeometry(group.geometry);
+    tempGeom.computeFaceNormals();
+    tempGeom.mergeVertices();
+    tempGeom.computeVertexNormals();
+
+    tempGeom.normalsNeedUpdate = true;
+
+    group.geometry = tempGeom;
+  } else if (group instanceof THREE.Group) {
+    group.children.forEach(child => computeNormalsGroup(group));
+  }
+}
+
+/**
+ * Load a gopher, and apply the material
+ * @param material if set apply this material to the gopher
+ * @returns {Promise<*>} which is fullfilled once the gopher is loaded
+ */
+let loadGopher = function (material) {
+  let loader = new OBJLoader2();
+  let mesh = null;
+
+  let p = new Promise(resolve => {
+    loader.load('../../static/test3.obj', function (loadMesh) {
+      // this is a group of meshes, so iterate until we reach a THREE.Mesh
+      mesh = loadMesh;
+      if (material) {
+        // material is defined, so overwrite the default material
+        computeNormalsGroup(mesh);
+        setMaterialGroup(material, mesh);
+      }
+      resolve(mesh);
+    });
+  });
+
+  return p;
+}
+
+export function addMeshSelection(gui, controls, material, scene) {
+  let sphereGeometry = new THREE.SphereGeometry(10, 20, 20);
+  let cubeGeometry = new THREE.BoxGeometry(16, 16, 15);
+  let planeGeometry = new THREE.PlaneGeometry(14, 14, 4, 4);
+
+  let sphere = new THREE.Mesh(sphereGeometry, material);
+  let cube = new THREE.Mesh(cubeGeometry, material);
+  let plane = new THREE.Mesh(planeGeometry, material);
+
+  sphere.position.x = 0;
+  sphere.position.y = 11;
+  sphere.position.z = 2;
+
+  cube.position.y = 8;
+
+  controls.selectedMesh = 'cube';
+  loadGopher(material).then(function (gopher) {
+    gopher.scale.x = 5;
+    gopher.scale.y = 5;
+    gopher.scale.z = 5;
+    gopher.position.z = 0;
+    gopher.position.x = -10;
+    gopher.position.y = 0;
+
+    gui.add(controls, 'selectedMesh', ['cube', 'sphere', 'plane', 'gopher']).onChange(e => {
+      scene.remove(controls.selected);
+
+      switch (e) {
+        case 'cube':
+          scene.add(cube);
+          controls.selected = cube;
+          break;
+        case 'sphere':
+          scene.add(sphere);
+          controls.selected = sphere;
+          break;
+        case 'plane':
+          scene.add(plane);
+          controls.selected = plane;
+          break;
+        case 'gopher':
+          scene.add(gopher);
+          controls.selected = gopher;
+          break;
+      }
+    });
+  });
+
+  controls.selected = cube;
+  scene.add(controls.selected);
 }

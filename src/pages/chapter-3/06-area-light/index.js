@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import {initStats, initCamera, initTrackballControls, initRenderer, initResize} from "../../../utils";
+import {RectAreaLightUniformsLib} from "three/examples/jsm/lights/RectAreaLightUniformsLib";
 
 import React, {Component} from "react";
 
@@ -9,6 +10,9 @@ class AreaLightDemo {
     #renderer;
 
     init () {
+        // https://www.cnblogs.com/gaozhiqiang/p/11543199.html
+        // should add RectAreaLightUniformsLib and init
+        RectAreaLightUniformsLib.init();
         let stats = initStats();
         this.#renderer = initRenderer({antialias: true}, 'area-light');
         this.#camera = initCamera();
@@ -33,6 +37,7 @@ class AreaLightDemo {
         plane.position.x = 0;
         plane.position.y = 0;
         plane.position.z = 0;
+        plane.receiveShadow = true;
 
         // add the plane to the scene
         scene.add(plane);
@@ -44,19 +49,19 @@ class AreaLightDemo {
         spotlight0.lookAt(plane.position);
         scene.add(spotlight0);
 
-        let areaLight1 = new THREE.RectAreaLight(0xff0000, 500, 4, 10);
+        let areaLight1 = new THREE.RectAreaLight(0xff0000, 10, 4, 10);
         areaLight1.position.set(-10, 10, -35);
         areaLight1.lookAt(plane.position);
         scene.add(areaLight1);
 
-        let areaLight2 = new THREE.RectAreaLight(0x00ff00, 500, 4, 10);
+        let areaLight2 = new THREE.RectAreaLight(0x00ff00, 10, 4, 10);
         areaLight2.position.set(0, 10, -35);
-        areaLight2.lookAt(plane.position)
+        areaLight2.lookAt(plane.position);
         scene.add(areaLight2);
 
-        let areaLight3 = new THREE.RectAreaLight(0x0000ff, 500, 4, 10);
+        let areaLight3 = new THREE.RectAreaLight(0x0000ff, 10, 4, 10);
         areaLight3.position.set(10, 10, -35);
-        areaLight3.lookAt(plane.position)
+        areaLight3.lookAt(plane.position);
         scene.add(areaLight3);
 
         let planeGeometry1 = new THREE.BoxGeometry(4, 10, 0);
@@ -80,11 +85,11 @@ class AreaLightDemo {
         let controls = {
             rotationSpeed: 0.02,
             color1: 0xff0000,
-            intensity1: 500,
+            intensity1: 10,
             color2: 0x00ff00,
-            intensity2: 500,
+            intensity2: 10,
             color3: 0x0000ff,
-            intensity3: 500
+            intensity3: 10
         }
 
         let gui = new dat.GUI();

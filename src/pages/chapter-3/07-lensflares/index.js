@@ -176,5 +176,5 @@ export default function LensflaresDom() {
         myLensflares.init();
     });
 
-    return <div id="lensflares"/>
+    return <div className="chart-class" id="lensflares"/>
 }

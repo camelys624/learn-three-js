@@ -149,6 +149,6 @@ export default class AreaLightDom extends Component {
     }
 
     render() {
-        return <div id="area-light"/>
+        return <div className="chart-class" id="area-light"/>
     }
 }

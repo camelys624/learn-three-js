@@ -600,7 +600,7 @@ export function addMeshSelection(gui, controls, material, scene) {
  * @param {THREE.WebGLRenderer} renderer
  */
 export function initResize(camera, renderer) {
-    let resize = function (camera, renderer) {
+    let resize = function () {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);

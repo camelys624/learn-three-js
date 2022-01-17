@@ -399,7 +399,7 @@ export function addBasicMaterialSetting(gui, controls, material, name) {
     folder.add(controls.material, 'name');
     folder.add(controls.material, 'opacity', 0, 1, 0.01);
     folder.add(controls.material, 'transparent');
-    folder.add(controls.material, 'overdraw', 0, 1, 0.01);
+    // folder.add(controls.material, 'overdraw', 0, 1, 0.01);
     folder.add(controls.material, 'visible');
     folder.add(controls.material, 'side', {FrontSide: 0, BackSide: 1, BothSides: 2}).onChange(side => {
         controls.material.side = parseInt(side);
@@ -522,12 +522,12 @@ let computeNormalsGroup = function (group) {
  * @param material if set apply this material to the gopher
  * @returns {Promise<*>} which is fullfilled once the gopher is loaded
  */
-let loadGopher = function (material) {
+export function loadGopher (material) {
     let loader = new OBJLoader2();
     let mesh = null;
 
     let p = new Promise(resolve => {
-        loader.load('../../static/test3.obj', function (loadMesh) {
+        loader.load('https://raw.githubusercontent.com/josdirksen/learning-threejs-third/master/assets/models/gopher/gopher.obj', function (loadMesh) {
             // this is a group of meshes, so iterate until we reach a THREE.Mesh
             mesh = loadMesh;
             if (material) {

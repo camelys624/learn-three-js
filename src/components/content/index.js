@@ -8,9 +8,9 @@ export default (props) => {
   return (
     <div className="content-container">
       {
-        data.allMarkdownRemark.edges.map(({ node }) => (
+        data.allSitePage.nodes.map(({ node }) => (
           <div className={contentStyle.containerItem} key={node.id}>
-            <Link to={node.fields.slug}>
+            <Link to={node.path}>
               <h3>
                 {node.frontmatter.title}{" "}
                 <span style={{color: '#bbb'}}>- {node.frontmatter.date}</span>

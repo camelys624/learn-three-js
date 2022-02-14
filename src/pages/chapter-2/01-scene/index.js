@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 
 import * as THREE from 'three'
-import {initStats} from "../../utils"
+import {initStats} from "../../../utils"
 import {SceneUtils} from 'three/examples/jsm/utils/SceneUtils';
 import * as dat from 'dat.gui';
 

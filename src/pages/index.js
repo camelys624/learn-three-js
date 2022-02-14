@@ -175,21 +175,11 @@ export default function Home({ data }) {
 }
 
 export const query = graphql`
-  query {
-    allMarkdownRemark {
-      totalCount
-      edges {
-        node {
-          id
-          frontmatter {
-            title
-            date(formatString: "DD MMMM, YYYY")
-          }
-          fields {
-            slug
-          }
-          excerpt
-        }
+  query MyQuery {
+    allSitePage(filter: {path: {regex: "/chapter*/"}}) {
+      nodes {
+        path,
+        id
       }
     }
   }

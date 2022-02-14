@@ -110,6 +110,8 @@ class MeshLambertMaterialDemo {
                         scene.add(gopher);
                         selectedMesh = gopher;
                         break;
+                    default:
+                        break;
                 }
             })
         });

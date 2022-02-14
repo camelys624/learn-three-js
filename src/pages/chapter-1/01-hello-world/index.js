@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 
 import * as Three from 'three'
-import {initStats} from "../../utils"
+import {initStats} from "../../../utils"
 import * as dat from 'dat.gui';
 
 export default class Chart1 extends Component {

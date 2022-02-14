@@ -513,7 +513,7 @@ let computeNormalsGroup = function (group) {
 
         group.geometry = tempGeom;
     } else if (group instanceof THREE.Group) {
-        group.children.forEach(child => computeNormalsGroup(group));
+        group.children.forEach(child => computeNormalsGroup(child));
     }
 }
 

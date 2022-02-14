@@ -456,6 +456,8 @@ export function addSpecificMaterialSetting(gui, controls, material, name) {
             folder.add(material, 'wireframe');
 
             return folder;
+        default:
+            break;
     }
 }
 
@@ -585,6 +587,8 @@ export function addMeshSelection(gui, controls, material, scene) {
                 case 'gopher':
                     scene.add(gopher);
                     controls.selected = gopher;
+                    break;
+                default:
                     break;
             }
         });
